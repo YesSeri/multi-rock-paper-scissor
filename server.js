@@ -1,12 +1,17 @@
+// Server and socket
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const path = require('path');
 const options = {
 	cors: true,
 };
 const io = require('socket.io')(server, options);
-// const uniqueString = require('unique-string');
+
+// Filepath
+const path = require('path');
+
+// RoomID
+const uniqueString = require('unique-string');
 
 const PORT = process.env.PORT || 5000;
 let players = {};
@@ -20,7 +25,7 @@ io.on('connection', (socket) => {
 	console.log('User has connected:' + socket.id);
 	socket.on('createGame', (data) => {
 		y++;
-		const roomID = 'room' + y; // uniqueString();
+		const roomID = uniqueString().slice(0, 4);
 		addRoom(roomID)
 		socket.join(roomID);
 		rooms[roomID].p1.name = data.name
@@ -76,41 +81,29 @@ io.on('connection', (socket) => {
 });
 
 const result = (roomID) => {
-	choice1 = rooms[roomID].p1.choice
-	choice2 = rooms[roomID].p2.choice
-	const winner = getWinner(choice1, choice2);
+  const { p1 } = rooms[roomID]
+  const { p2 } = rooms[roomID]
+	const winner = getWinner(p1, p2);
 	console.log(winner);
 	io.sockets.to(roomID).emit('result', { winner }); // This is used to send to everyone in room
 	rooms[roomID].p1.choice = ""
 	rooms[roomID].p2.choice = ""
 };
 const getWinner = (p1, p2) => {
-	const rock = 'Rock';
-	const paper = 'Paper';
-	const scissor = 'Scissor';
-	if (p1 === p2) {
-		return 'draw';
-	}
-	if (p1 === rock) {
-		if (p2 === paper) {
-			return 'p2 wins, with paper';
-		} else {
-			return 'p1 wins, with rock';
-		}
-	} else if (p1 === paper) {
-		if (p2 === scissor) {
-			return 'p2 wins, with scissor';
-		} else {
-			return 'p1 wins, with paper';
-		}
-	} else {
-		//scissor
-		if (p2 === rock) {
-			return 'p2 wins, with rock';
-		} else {
-			return 'p1 wins, with scissor';
-		}
-	}
+  debugger;
+  const attacks ={
+    Rock: {weakTo: 'Paper', strongTo: 'Scissors'},
+    Paper: {weakTo: 'Scissors', strongTo: 'Rock'},
+    Scissor: {weakTo: 'Rock', strongTo: 'Paper'},
+  }
+  debugger;
+  if (attacks[p1.choice].strongTo === p2.choice){ // This means I won
+    return `${p1.name} wins with ${p1.choice}`
+  }
+  if (attacks[p1.choice].weakTo === p2.choice){ // This means I won
+    return `${p2.name} wins with ${p2.choice}`
+  }
+  return "It is a draw"
 };
 
 function addRoom(roomName) {
@@ -118,10 +111,12 @@ function addRoom(roomName) {
 		p1: {
 			name: '',
 			choice: '',
+			score: 0,
 		},
 		p2: {
 			name: '',
 			choice: '',
+			score: 0,
 		},
 	}
 }
