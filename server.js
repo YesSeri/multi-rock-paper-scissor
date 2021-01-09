@@ -10,6 +10,7 @@ const io = require('socket.io')(server, options);
 
 const PORT = process.env.PORT | 5000;
 let players = {};
+let rooms = {};
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -22,39 +23,50 @@ io.on('connection', (socket) => {
 	socket.on('createGame', (data) => {
 		y++;
 		const roomID = 'room' + y; // uniqueString();
+		addRoom(roomID)
 		socket.join(roomID);
+		rooms[roomID].p1.name = data.name
 		players[roomID] = data.name;
 		socket.emit('newGame', { roomID });
 	});
 	socket.on('joinGame', (data) => {
-		socket.join(data.roomID);
-		socket.to(data.roomID).emit('player2Joined', {
+		console.log('joinGAME')
+		const { roomID, name } = data
+		rooms[roomID].p2.name = name
+		socket.join(roomID);
+		socket.to(roomID).emit('player2Joined', {
 			// Socket to sends message to everyone else in room, a broadcast.
-			p2name: data.name,
-			p1name: players[data.roomID],
+			p2name: name,
+			p1name: players[roomID],
 		});
 		socket.emit('player1Joined', {
 			// Socket emit sends to current socket only.
-			p2name: players[data.roomID],
-			p1name: data.name,
+			p2name: players[roomID],
+			p1name: name,
 		});
 	});
 	socket.on('choicePlayerOne', (data) => {
-		choice1 = data.choice;
-		console.log(choice1, choice2);
-		if (choice2 != '') {
-			result(data.roomID);
+		console.log('choicePLAYERONE')
+		const {roomID, choice} = data
+		rooms[roomID].p1.choice = choice
+		console.log(rooms[roomID].p1.choice, rooms[roomID].p2.choice);
+		if (rooms[roomID].p2.choice  !== '') {
+		console.log('IF STATEMENT choicePLAYERONE')
+			result(roomID);
 		}
 	});
 	socket.on('choicePlayerTwo', (data) => {
-		choice2 = data.choice;
-		console.log(choice1, choice2);
-		if (choice1 != '') {
-			result(data.roomID);
+		console.log('choicePLAYERTWO')
+		const {roomID, choice} = data
+		rooms[roomID].p2.choice = choice
+		console.log(rooms[roomID].p1.choice, rooms[roomID].p2.choice);
+		console.log(rooms[roomID].p1.choice)
+		if (rooms[roomID].p1.choice  !== '') {
+		console.log('IF STATEMENT choicePLAYERTWO')
+			result(roomID);
 		}
 	});
 	socket.on('playAgain', (data) => {
-		console.log(players);
 		socket.to(data.roomID).emit('playAgainInvite');
 	});
 	socket.on('acceptInvite', (data) => {
@@ -66,11 +78,13 @@ io.on('connection', (socket) => {
 });
 
 const result = (roomID) => {
+	choice1 = rooms[roomID].p1.choice
+	choice2 = rooms[roomID].p2.choice
 	const winner = getWinner(choice1, choice2);
 	console.log(winner);
 	io.sockets.to(roomID).emit('result', { winner }); // This is used to send to everyone in room
-	choice1 = '';
-	choice2 = '';
+	rooms[roomID].p1.choice = ""
+	rooms[roomID].p2.choice = ""
 };
 const getWinner = (p1, p2) => {
 	const rock = 'Rock';
@@ -100,6 +114,19 @@ const getWinner = (p1, p2) => {
 		}
 	}
 };
+
+function addRoom(roomName) {
+	rooms[roomName] = {
+		p1: {
+			name: '',
+			choice: '',
+		},
+		p2: {
+			name: '',
+			choice: '',
+		},
+	}
+}
 
 server.listen(PORT, '0.0.0.0', () => {
 	console.log(`Listening on port: ${PORT}`);

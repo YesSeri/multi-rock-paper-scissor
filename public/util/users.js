@@ -1,6 +1,0 @@
-const connectedUsers = {}
-
-const choices = {
-  
-}
-

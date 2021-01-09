@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="css/style.css" />
-		<link
-			rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-		/>
-		<title>Rock Paper Scissors</title>
-	</head>
 
-	<body>
-		<div class="startScreen">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Rock Paper Scissors</title>
+</head>
+
+<body>
+	<div class="mainContainer">
+		<div class="gameContainer">
 			<h1>Rock Paper Scissors</h1>
 			<div>Room: <span id="roomName"></span></div>
 			<div class="gameplay-choices" id="gameplay-choices">
@@ -29,14 +28,16 @@
 				<button id="scissorButton" class="choiceButtons" disabled="true">Scissor</button>
 			</div>
 			<p id="message">Create or join game</p>
-      <div>
-      <button id="playAgainButton">Play Again</button>
-      </div>
-      <div>
-      <button id="acceptInviteButton">Accept Invite</button>
-      </div>
+			<div>
+				<button id="playAgainButton">Play Again</button>
+			</div>
+			<div>
+				<button id="acceptInviteButton">Accept Invite</button>
+			</div>
 			<script src="/socket.io/socket.io.js"></script>
 			<script src="js/scripts.js "></script>
-    </div>
-	</body>
+		</div>
+	</div>
+</body>
+
 </html>

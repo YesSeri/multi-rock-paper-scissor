@@ -1,6 +1,11 @@
 body{
-	background-color: black;
 	color: white;
+}
+.mainContainer{
+}
+.gameContainer{ 
+	background-color: grey;
+	max-width: 800px;
 }
 div {
 	margin:auto;

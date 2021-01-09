@@ -24,6 +24,7 @@ createGameButton.addEventListener('click', function () {
 joinGameButton.addEventListener('click', function () {
 	const playerName = 'Player Two';
 	roomID = document.getElementById('joinRoomInput').value;
+	document.getElementById('roomName').innerHTML = roomID;
 	socket.emit('joinGame', { name: playerName, roomID });
 });
 
