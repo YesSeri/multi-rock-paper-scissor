@@ -1,24 +1,21 @@
 html {
-	font-size: 16px;
-}
-
-body {
-	font-family: 'Montserrat Alternates', sans-serif;
+	--blue: rgb(1, 163, 164);
+	--white: #ffffff;
+	--yellow: rgb(254, 202, 87);
+	--red: rgb(255, 107, 107);
+	color: var(--black);
+	font-size: 18px;
+	font-family: 'Inconsolata', 'Montserrat Alternates', sans-serif;
 }
 
 h1 {
+	font-weight: 400;
 	font-size: 2em;
 }
 
 h3 {
 	font-size: 1em;
-}
-
-/* .mainContainer{
-} */
-
-.gameContainer {
-	max-width: 800px;
+	font-weight: 400;
 }
 
 div {
@@ -35,36 +32,75 @@ div {
 .startGameDivs {
 	border: solid 2px black;
 	border-radius: 15px;
-	height: 200px;
+	height: 150px;
+	width: 45%;
 }
 
-
+.joinCreateButtonDiv{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
 .startGameDivs button {
+	margin:auto;
+	border: none;
 	background-color: #feca57;
 	color: black;
+	height: 50%;
+	width: 80%;
+	border-radius: 15px;
+}
+
+.startGameDivs form {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
 }
 
 form input {
 	margin: auto;
+	border: none;
+	border-bottom: solid 2px black;
 	display: block;
+	width: 130px;
 }
 
-#createGameDiv {
-	margin: 0px 10px 0px 0px;
-}
-#joinGameDiv {
-	margin: 0px 0px 0px 10px;
+#joinInputDiv {
+	display: flex;
+	flex-wrap: wrap;
 }
 
-
+#gameContainer {
+	display:none;
+}
+.choices{
+	display: flex;
+	justify-content: center;
+	max-height: 200px;
+}
+svg {
+	max-width: 200px;
+	/* visibility:hidden; */
+} 
+#Rock:hover {
+  color: var(--blue);
+}
+#Paper:hover {
+  color: var(--yellow);
+}
+#Scissor:hover {
+  color: var(--red);
+}
 #roomNameInfo {
-	display: none;
+	/* display: none; */
 }
 
 #playAgainButton {
-	display: none;
+	/* display: none; */
 }
 
 #acceptInviteButton {
-	display: none;
+	/* display: none; */
 }
