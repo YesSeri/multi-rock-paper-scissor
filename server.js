@@ -92,8 +92,8 @@ const result = (roomID) => {
 const getWinner = (p1, p2) => {
   debugger;
   const attacks ={
-    Rock: {weakTo: 'Paper', strongTo: 'Scissors'},
-    Paper: {weakTo: 'Scissors', strongTo: 'Rock'},
+    Rock: {weakTo: 'Paper', strongTo: 'Scissor'},
+    Paper: {weakTo: 'Scissor', strongTo: 'Rock'},
     Scissor: {weakTo: 'Rock', strongTo: 'Paper'},
   }
   debugger;
