@@ -15,8 +15,6 @@ let rooms = {};
 app.use(express.static(path.join(__dirname, 'public')));
 
 let y = 0;
-let choice1 = '';
-let choice2 = '';
 
 io.on('connection', (socket) => {
 	console.log('User has connected:' + socket.id);
