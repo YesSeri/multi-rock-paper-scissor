@@ -23,10 +23,10 @@ let y = 0;
 
 io.on('connection', (socket) => {
 	console.log('User has connected:' + socket.id);
-	console.log(socket.adapter.rooms);
 	socket.on('createGame', (data) => {
 		y++;
 		const roomID = 'room'+y//uniqueString().slice(0, 4);
+    leaveAllRooms(socket)
 		addRoom(roomID)
 		socket.join(roomID);
 		rooms[roomID].p1.name = data.name
@@ -36,15 +36,16 @@ io.on('connection', (socket) => {
 	socket.on('joinGame', (data) => {
 		const { roomID, name } = data
 		rooms[roomID].p2.name = name
+    leaveAllRooms(socket)
 		socket.join(roomID);
 		socket.to(roomID).emit('player2Joined', {
 			// Socket to sends message to everyone else in room, a broadcast.
 			p2name: name,
-			p1name: players[roomID],
+			p1name: rooms[roomID].p1.name,
 		});
 		socket.emit('player1Joined', {
 			// Socket emit sends to current socket only.
-			p2name: players[roomID],
+			p2name: rooms[roomID].p2.name,
 			p1name: name,
 		});
 	});
@@ -71,10 +72,12 @@ io.on('connection', (socket) => {
 		io.sockets.to(data.roomID).emit('restartGame'); // This is used to send to everyone in room
 	});
 
-	socket.on('disconnecting', () => {
-		// socket.to(roomID).emit('opponentDisconnected', {})
-
-	})
+	socket.on('disconnecting', () => { // In disconnecting the rooms are still shown. In disconnect the rooms are already left. 
+    socket.rooms.forEach((roomID) => {
+		  socket.to(roomID).emit('opponentDisconnected')
+      console.log(roomID)
+    })
+  })
 	socket.on('disconnect', () => {
 		console.log('User has disconnected: ' + socket.id);
 	});
@@ -84,27 +87,46 @@ const result = (roomID) => {
   const { p1 } = rooms[roomID]
   const { p2 } = rooms[roomID]
 	const winner = getWinner(p1, p2);
-	console.log(winner);
-	io.sockets.to(roomID).emit('result', { winner }); // This is used to send to everyone in room
-	rooms[roomID].p1.choice = ""
-	rooms[roomID].p2.choice = ""
+  const winnerMessage = getWinnerMessage(winner, p1, p2)
+  increaseScore(winner)
+	io.sockets.to(roomID).emit('result', { winnerMessage }); // This is used to send to everyone in room
+  resetChoices(p1, p2)
 };
 const getWinner = (p1, p2) => {
-  debugger;
   const attacks ={
     Rock: {weakTo: 'Paper', strongTo: 'Scissor'},
     Paper: {weakTo: 'Scissor', strongTo: 'Rock'},
     Scissor: {weakTo: 'Rock', strongTo: 'Paper'},
   }
-  debugger;
   if (attacks[p1.choice].strongTo === p2.choice){ // This means I won
-    return `${p1.name} wins with ${p1.choice}`
+    return p1
   }
   if (attacks[p1.choice].weakTo === p2.choice){ // This means I won
-    return `${p2.name} wins with ${p2.choice}`
+    return p2
   }
-  return "It is a draw"
+  return "draw"
 };
+const getWinnerMessage = (winner, p1, p2) => {
+  if(winner === p1){
+    return `${p1.name} wins with ${p1.choice}`
+  } else if(winner === p2){
+    return `${p2.name} wins with ${p2.choice}`
+  } 
+  return `It is a draw, between ${p1.choice}`
+}
+const increaseScore = (winner) => {
+  winner.score++;
+}
+const resetChoices = (p1, p2) => {
+	p1.choice = ""
+	p2.choice = ""
+}
+function leaveAllRooms(socket){
+  socket.rooms.forEach((roomID) => {
+    delete rooms[roomID]
+    socket.leave(roomID)
+  });
+}
 
 function addRoom(roomName) {
 	rooms[roomName] = {

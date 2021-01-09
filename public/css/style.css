@@ -1,20 +1,70 @@
-body{
-	color: white;
+html {
+	font-size: 16px;
 }
-.mainContainer{
+
+body {
+	font-family: 'Montserrat Alternates', sans-serif;
 }
-.gameContainer{ 
-	background-color: grey;
+
+h1 {
+	font-size: 2em;
+}
+
+h3 {
+	font-size: 1em;
+}
+
+/* .mainContainer{
+} */
+
+.gameContainer {
 	max-width: 800px;
 }
+
 div {
-	margin:auto;
+	margin: auto;
 	text-align: center;
-	padding: 10px;
 }
-#playAgainButton{
-  display: none;
+
+#container {
+	margin: 0px 20px;
+	display: flex;
+	justify-content: space-evenly;
 }
-#acceptInviteButton{
-  display: none;
+
+.startGameDivs {
+	border: solid 2px black;
+	border-radius: 15px;
+	height: 200px;
+}
+
+
+.startGameDivs button {
+	background-color: #feca57;
+	color: black;
+}
+
+form input {
+	margin: auto;
+	display: block;
+}
+
+#createGameDiv {
+	margin: 0px 10px 0px 0px;
+}
+#joinGameDiv {
+	margin: 0px 0px 0px 10px;
+}
+
+
+#roomNameInfo {
+	display: none;
+}
+
+#playAgainButton {
+	display: none;
+}
+
+#acceptInviteButton {
+	display: none;
 }

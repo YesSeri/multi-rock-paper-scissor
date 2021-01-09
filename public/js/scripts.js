@@ -24,7 +24,7 @@ createGameButton.addEventListener('click', function () {
 joinGameButton.addEventListener('click', function () {
 	const playerName = 'Player Two';
 	roomID = document.getElementById('joinRoomInput').value;
-	document.getElementById('roomName').innerHTML = roomID;
+	document.getElementById('roomNameInfo').innerHTML = "Room: " + roomID;
 	socket.emit('joinGame', { name: playerName, roomID });
 });
 
@@ -39,7 +39,6 @@ acceptInviteButton.addEventListener('click', function () {
 	socket.emit('acceptInvite', { roomID });
 })
 socket.on('playAgainInvite', () => {
-  console.log('PLAYAGAININVITE RECIEVED')
   playAgainButton.style.display = 'none';
   acceptInviteButton.style.display = 'inline-block';
 
@@ -64,10 +63,20 @@ socket.on('player2Joined', (data) => {
 });
 
 socket.on('result', (data) => {
-  console.log(data.winner)
-  message.innerText = data.winner 
+  console.log(data.winnerMessage)
+  message.innerText = data.winnerMessage 
 	playAgainButton.style.display = 'inline-block';
 });
+
+socket.on('opponentDisconnected', () => {
+  message.innerText = 'Opponent disconnected. Game over'
+  resetGame();
+})
+
+const resetGame = () => {
+	createGameButton.style.visibility = 'visible';
+	joinGameButton.style.visibility = 'visible';
+}
 
 const transition = () => {
 	createGameButton.style.visibility = 'hidden';
@@ -75,17 +84,14 @@ const transition = () => {
 }
 
 document.getElementById('rockButton').addEventListener('click', function () {
-	console.log('clicked rock');
   makeChoice('Rock')
   disableChoiceButtons();
 });
 document.getElementById('paperButton').addEventListener('click', function () {
-	console.log('clicked paper');
   makeChoice('Paper')
   disableChoiceButtons();
 });
 document.getElementById('scissorButton').addEventListener('click', function () {
-  console.log('clicked scissor');
   makeChoice('Scissor')
   disableChoiceButtons();
 });

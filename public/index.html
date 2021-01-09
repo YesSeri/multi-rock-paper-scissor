@@ -5,18 +5,35 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="css/style.css" />
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap');
+	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<title>Rock Paper Scissors</title>
 </head>
 
 <body>
 	<div class="mainContainer">
+		<h1>Rock Paper Scissors</h1>
 		<div class="gameContainer">
-			<h1>Rock Paper Scissors</h1>
-			<div>Room: <span id="roomName"></span></div>
-			<div class="gameplay-choices" id="gameplay-choices">
-				<button id="createGameButton">Create Room</button>
-				<button id="joinGameButton">Join Room</button>
+			<p id="roomNameInfo">Room:
+			</p>
+			<div id="container">
+				<div id="createGameDiv" class="startGameDivs">
+					<h3>Create a new Game</h3>
+					<form onsubmit="return false">
+						<input placeholder="Enter your name" id="nameCreate">
+						<button id="createGameButton">Create Room</button>
+					</form>
+				</div>
+				<div id="joinGameDiv" class="startGameDivs">
+					<h3>Join an existing Game</h3>
+					<form onsubmit="return false">
+						<input placeholder="Enter your name" id="nameJoin" required>
+						<input placeholder="Enter game ID" id="name" required>
+						<button id="joinGameButton">Join Room</button>
+					</form>
+				</div>
 			</div>
 			<div>
 				<span>Room</span>
