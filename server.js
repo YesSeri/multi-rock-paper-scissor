@@ -8,7 +8,7 @@ const options = {
 const io = require('socket.io')(server, options);
 // const uniqueString = require('unique-string');
 
-const PORT = process.env.PORT | 5000;
+const PORT = process.env.PORT || 5000;
 let players = {};
 let rooms = {};
 
