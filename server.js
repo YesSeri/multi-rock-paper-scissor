@@ -23,9 +23,10 @@ let y = 0;
 
 io.on('connection', (socket) => {
 	console.log('User has connected:' + socket.id);
+	console.log(socket.adapter.rooms);
 	socket.on('createGame', (data) => {
 		y++;
-		const roomID = uniqueString().slice(0, 4);
+		const roomID = 'room'+y//uniqueString().slice(0, 4);
 		addRoom(roomID)
 		socket.join(roomID);
 		rooms[roomID].p1.name = data.name
@@ -33,7 +34,6 @@ io.on('connection', (socket) => {
 		socket.emit('newGame', { roomID });
 	});
 	socket.on('joinGame', (data) => {
-		console.log('joinGAME')
 		const { roomID, name } = data
 		rooms[roomID].p2.name = name
 		socket.join(roomID);
@@ -49,23 +49,18 @@ io.on('connection', (socket) => {
 		});
 	});
 	socket.on('choicePlayerOne', (data) => {
-		console.log('choicePLAYERONE')
 		const {roomID, choice} = data
 		rooms[roomID].p1.choice = choice
 		console.log(rooms[roomID].p1.choice, rooms[roomID].p2.choice);
 		if (rooms[roomID].p2.choice  !== '') {
-		console.log('IF STATEMENT choicePLAYERONE')
 			result(roomID);
 		}
 	});
 	socket.on('choicePlayerTwo', (data) => {
-		console.log('choicePLAYERTWO')
 		const {roomID, choice} = data
 		rooms[roomID].p2.choice = choice
 		console.log(rooms[roomID].p1.choice, rooms[roomID].p2.choice);
-		console.log(rooms[roomID].p1.choice)
 		if (rooms[roomID].p1.choice  !== '') {
-		console.log('IF STATEMENT choicePLAYERTWO')
 			result(roomID);
 		}
 	});
@@ -75,6 +70,11 @@ io.on('connection', (socket) => {
 	socket.on('acceptInvite', (data) => {
 		io.sockets.to(data.roomID).emit('restartGame'); // This is used to send to everyone in room
 	});
+
+	socket.on('disconnecting', () => {
+		// socket.to(roomID).emit('opponentDisconnected', {})
+
+	})
 	socket.on('disconnect', () => {
 		console.log('User has disconnected: ' + socket.id);
 	});
