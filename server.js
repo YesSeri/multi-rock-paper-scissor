@@ -31,20 +31,23 @@ io.on('connection', (socket) => {
 		socket.join(roomID);
 		rooms[roomID].p1.name = data.name
 		players[roomID] = data.name;
-		socket.emit('newGame', { roomID });
+		socket.emit('newGame', { roomID, name: data.name });
 	});
 	socket.on('joinGame', (data) => {
 		const { roomID, name } = data
+		debugger;
 		rooms[roomID].p2.name = name
     leaveAllRooms(socket)
 		socket.join(roomID);
 		socket.to(roomID).emit('player2Joined', {
 			// Socket to sends message to everyone else in room, a broadcast.
+			roomID,
 			p2name: name,
 			p1name: rooms[roomID].p1.name,
 		});
 		socket.emit('player1Joined', {
 			// Socket emit sends to current socket only.
+			roomID,
 			p2name: rooms[roomID].p2.name,
 			p1name: name,
 		});

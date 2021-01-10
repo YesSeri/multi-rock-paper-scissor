@@ -37,23 +37,17 @@ div {
 	margin: 0px 20px;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-evenly;
+	justify-content: center;
 }
 
 .startGameDivs {
+	margin: 40px 10px 0px 10px;
 	border: solid 2px black;
 	border-radius: 15px;
 	height: 150px;
-	width: 45%;
-	padding: 0px 10px;
-	margin-top: 40px;
-}
-
-@media screen and (max-width: 600px) {
-	.startGameDivs {
-		width: auto;
-		max-width: 300px;
-	}
+	max-width: 400px;
+	min-width: 200px;
+	flex: 1;
 }
 
 .joinCreateButtonDiv {
@@ -100,14 +94,10 @@ form input {
 }
 
 .choices {
-	display: flex;
-	justify-content: center;
-	max-height: 200px;
 }
 
 svg {
 	max-width: 200px;
-	/* visibility:hidden; */
 }
 
 #Rock:hover {
@@ -127,22 +117,18 @@ svg {
 	pointer-events: none;
 }
 
-#roomNameInfo {
+#playAgainButton {
 	/* display: none; */
 }
 
-#playAgainButton {
-	display: none;
-}
-
 #acceptInviteButton {
-	display: none;
+	/* display: none; */
 }
 
 .replayButtons {
 	margin: 10px auto;
 	border: none;
-	background-color: #feca57;
+	background-color: var(--yellow);
 	color: black;
 	height: 40px;
 	width: 180px;

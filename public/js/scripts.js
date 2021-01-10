@@ -1,35 +1,55 @@
 const socket = io();
 
+let firstPlayer = false;
+let roomID;
+
 const createGameButton = document.getElementById('createGameButton');
 const joinGameButton = document.getElementById('joinGameButton');
+const rockButton = document.getElementById('Rock')
+const paperButton = document.getElementById('Paper')
+const scissorButton = document.getElementById('Scissor')
 const playAgainButton = document.getElementById('playAgainButton');
 const acceptInviteButton = document.getElementById('acceptInviteButton');
 
-const seeGameBox = () => {
-  const container = document.getElementById('container');
-  setMessage('Choose your input')
-  container.style.display = 'none';
-  const gameContainer = document.getElementById('gameContainer');
-  gameContainer.style.display = 'block';
-  document.getElementById('roomNameInfo').innerHTML = "You are in: room3";
+const replayButtons = document.getElementsByClassName('replayButtons');
+const choiceButtons = document.getElementsByClassName('choiceButtons');
+
+for (el of choiceButtons){
+  console.log(el)
+}
+function inLobby() {
+  createGameButton.addEventListener('click', function () {
+    firstPlayer = true;
+    const name = getNameFromInput('nameCreate')
+    socket.emit('createGame', { name });
+    waitRoom();
+  });
+  joinGameButton.addEventListener('click', function () {
+    const name = getNameFromInput('nameJoin')
+    displaySetRoomID();
+    socket.emit('joinGame', { name, roomID });
+  });
+  function getNameFromInput(inputID) {
+    return document.getElementById(inputID).value;
+  }
+}
+inLobby();
+function waitRoom() {
+  disableLobby();
+  socket.on('newGame', (data) => { // name and roomID
+    setRoomID(data.roomID)
+    setImportantMessage();
+    setMessage(`Hello, ${data.name}! Ask your friend to enter the game ID: ${data.roomID}`)
+  });
 }
 
-let firstPlayer = false;
-let myName = "";
-let roomID;
-socket.on('newGame', ({ roomID }) => {
-  document.getElementById('roomNameInfo').innerHTML = roomID;
-  setMessage(`Hello, ${myName}! Ask your friend to enter the game ID: ${roomID}`)
-  setImportantMessage();
-});
-
-createGameButton.addEventListener('click', function () {
-  const nameInput = document.getElementById("nameCreate").value;
-  myName = nameInput;
-  firstPlayer = true;
-  hideCreateGame();
-  socket.emit('createGame', { name: 'Player One' });
-});
+function displaySetRoomID() {
+  roomID = document.getElementById('joinRoomInput').value;
+  setRoomID(roomID)
+}
+function setRoomID(roomID) {
+  document.getElementById('roomNameInfo').innerHTML = "Room: " + roomID;
+}
 
 function setMessage(text) {
   const message = document.getElementById('message')
@@ -44,19 +64,6 @@ function removeImportantMessage() {
   const element = document.getElementById("message");
   element.classList.remove("importantMessage");
 }
-
-function hideCreateGame() {
-  const container = document.getElementById('container');
-  container.style.display = 'none';
-}
-
-joinGameButton.addEventListener('click', function () {
-  const nameInput = document.getElementById("nameJoin").value;
-  const name = nameInput;
-  roomID = document.getElementById('joinRoomInput').value;
-  document.getElementById('roomNameInfo').innerHTML = "Room: " + roomID;
-  socket.emit('joinGame', { name, roomID });
-});
 
 playAgainButton.addEventListener('click', function () {
   setMessage('Waiting for other player to accept.')
@@ -79,20 +86,58 @@ socket.on('restartGame', () => {
 })
 
 //Player 1 Joined
-socket.on('player1Joined', (data) => {
-  startGame()
-  removeImportantMessage()
+socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
+  setRoomID(data.roomID)
+  disableLobby()
+  removeImportantMessage()
+  enableGameRoom();
+  // startGame()
 });
 
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
-  startGame()
   setMessage('New player joined, game has started')
+  setRoomID(data)
+  disableLobby()
+  removeImportantMessage()
+  enableGameRoom();
+  // startGame()
 });
+function setRoomID(data){
+  roomID = data.roomID
+}
 
-function startGame() {
+function disableLobby() {
+  const container = document.getElementById('container');
+  container.style.display = 'none';
+}
+
+function enableGameRoom() {
+  disableReplayButtons()
+  choiceButtonEventListeners();
   enableChoiceButtons()
+  enableGameContainer()
+}
+function enableGameContainer() {
+  const gameContainer = document.getElementById('gameContainer');
+  gameContainer.style.display = 'block';
+}
+function disableChoiceButtons() {
+  for (button of choiceButtons) {
+    console.log(button)
+    button.classList.add("noHoverDisabled");
+  }
+}
+function enableChoiceButtons() {
+  const el = document.querySelectorAll(".noHoverDisabled")
+
+  if (el.length === 0) return
+  for (button of choiceButtons) {
+    button.classList.remove("noHoverDisabled");
+  }
+}
+function startGame() {
   const container = document.getElementById('container');
   container.style.display = 'none';
   const gameContainer = document.getElementById('gameContainer');
@@ -100,51 +145,53 @@ function startGame() {
   document.getElementById('roomNameInfo').innerHTML = "You are in: room3";
 }
 
-socket.on('result', (data) => {
-  setMessage(data.winnerMessage)
-  playAgainButton.style.display = 'inline-block';
-});
-
-socket.on('opponentDisconnected', () => {
-  setMessage('Opponent disconnected. Game over')
-  resetGame();
-})
-
-const resetGame = () => {
-  createGameButton.style.visibility = 'visible';
-  joinGameButton.style.visibility = 'visible';
+function enableReplayButtons() {
+  for (button of replayButtons) {
+    button.style.display = 'none'
+  }
 }
 
-const choiceArray = ['Rock', 'Paper', 'Scissor']
-const choiceButtons = [];
+function disableReplayButtons() {
+  for (button of replayButtons) {
+    button.style.display = 'none'
+  }
+}
+// socket.on('result', (data) => {
+//   setMessage(data.winnerMessage)
+//   playAgainButton.style.display = 'inline-block';
+// });
 
-choiceArray.forEach((choice) => {
-  const button = document.getElementById(choice)
-  choiceButtons.push(button)
-  button.addEventListener('click', function () {
-    buttonClicked(choice)
-  });
-})
+// socket.on('opponentDisconnected', () => {
+//   setMessage('Opponent disconnected. Game over')
+//   resetGame();
+// })
+
+// const resetGame = () => {
+//   createGameButton.style.visibility = 'visible';
+//   joinGameButton.style.visibility = 'visible';
+// }
+
 
 const buttonClicked = (choice) => {
-  console.log(choice)
   setMessage("Waiting for opponent to move.")
   makeChoice(choice)
   disableChoiceButtons();
 }
+function choiceButtonEventListeners() {
+  rockButton.addEventListener('click', function () {
+    console.log('Click')
+    buttonClicked('Rock')
+  });
+  paperButton.addEventListener('click', function () {
+    console.log('Click')
+    buttonClicked('Paper')
+  });
+  scissorButton.addEventListener('click', function () {
+    console.log('Click')
+    buttonClicked('Scissor')
+  });
 
-const disableChoiceButtons = () => {
-  for (button of choiceButtons) {
-    button.classList.add("noHoverDisabled");
-  }
 }
-
-const enableChoiceButtons = () => {
-  for (button of choiceButtons) {
-    button.disabled = false;
-  }
-}
-
 const makeChoice = choice => {
   const choiceEvent = firstPlayer ? 'choicePlayerOne' : 'choicePlayerTwo'
   socket.emit(choiceEvent, {
