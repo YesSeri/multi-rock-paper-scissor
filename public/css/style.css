@@ -49,6 +49,19 @@ div {
 	min-width: 200px;
 	flex: 1;
 }
+#choices{
+	display:flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.choiceDiv{
+	max-width: 200;
+	min-width: 120;
+}
+
+/* svg {
+	max-width: 200px;
+} */
 
 .joinCreateButtonDiv {
 	width: 100%;
@@ -93,11 +106,6 @@ form input {
 	display: none;
 }
 
-.choices {}
-
-svg {
-	max-width: 200px;
-}
 
 #Rock:hover {
 	color: var(--blue);
