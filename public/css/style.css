@@ -117,12 +117,10 @@ svg {
 	pointer-events: none;
 }
 
-#playAgainButton {
-	/* display: none; */
-}
-
-#acceptInviteButton {
-	/* display: none; */
+.scoreboardDiv {
+	display:flex;
+	justify-content: space-evenly;
+	font-size: 3em;
 }
 
 .replayButtons {

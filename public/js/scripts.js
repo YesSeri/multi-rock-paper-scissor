@@ -14,7 +14,7 @@ const acceptInviteButton = document.getElementById('acceptInviteButton');
 const replayButtons = document.getElementsByClassName('replayButtons');
 const choiceButtons = document.getElementsByClassName('choiceButtons');
 
-for (el of choiceButtons){
+for (el of choiceButtons) {
   console.log(el)
 }
 function inLobby() {
@@ -26,7 +26,8 @@ function inLobby() {
   });
   joinGameButton.addEventListener('click', function () {
     const name = getNameFromInput('nameJoin')
-    displaySetRoomID();
+    roomID = document.getElementById('joinRoomInput').value;
+    setRoomInfo(roomID)
     socket.emit('joinGame', { name, roomID });
   });
   function getNameFromInput(inputID) {
@@ -37,17 +38,14 @@ inLobby();
 function waitRoom() {
   disableLobby();
   socket.on('newGame', (data) => { // name and roomID
-    setRoomID(data.roomID)
+    roomID = data.roomID
+    setRoomInfo(roomID)
     setImportantMessage();
     setMessage(`Hello, ${data.name}! Ask your friend to enter the game ID: ${data.roomID}`)
   });
 }
 
-function displaySetRoomID() {
-  roomID = document.getElementById('joinRoomInput').value;
-  setRoomID(roomID)
-}
-function setRoomID(roomID) {
+function setRoomInfo(roomID) {
   document.getElementById('roomNameInfo').innerHTML = "Room: " + roomID;
 }
 
@@ -88,7 +86,6 @@ socket.on('restartGame', () => {
 //Player 1 Joined
 socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
-  setRoomID(data.roomID)
   disableLobby()
   removeImportantMessage()
   enableGameRoom();
@@ -98,15 +95,11 @@ socket.on('player1Joined', (data) => { //Here the name of the oppnent is also re
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
   setMessage('New player joined, game has started')
-  setRoomID(data)
   disableLobby()
   removeImportantMessage()
   enableGameRoom();
   // startGame()
 });
-function setRoomID(data){
-  roomID = data.roomID
-}
 
 function disableLobby() {
   const container = document.getElementById('container');
@@ -137,13 +130,6 @@ function enableChoiceButtons() {
     button.classList.remove("noHoverDisabled");
   }
 }
-function startGame() {
-  const container = document.getElementById('container');
-  container.style.display = 'none';
-  const gameContainer = document.getElementById('gameContainer');
-  gameContainer.style.display = 'block';
-  document.getElementById('roomNameInfo').innerHTML = "You are in: room3";
-}
 
 function enableReplayButtons() {
   for (button of replayButtons) {
@@ -156,10 +142,10 @@ function disableReplayButtons() {
     button.style.display = 'none'
   }
 }
-// socket.on('result', (data) => {
-//   setMessage(data.winnerMessage)
-//   playAgainButton.style.display = 'inline-block';
-// });
+socket.on('result', (data) => {
+  setMessage(data.winnerMessage)
+  playAgainButton.style.display = 'inline-block';
+});
 
 // socket.on('opponentDisconnected', () => {
 //   setMessage('Opponent disconnected. Game over')

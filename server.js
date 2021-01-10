@@ -93,7 +93,7 @@ const result = (roomID) => {
 	const winner = getWinner(p1, p2);
   const winnerMessage = getWinnerMessage(winner, p1, p2)
   increaseScore(winner)
-	io.sockets.to(roomID).emit('result', { winnerMessage }); // This is used to send to everyone in room
+	io.sockets.to(roomID).emit('result', { winnerMessage, scoreP1: p1.score, scoreP2: p2.score }); // This is used to send to everyone in room
   resetChoices(p1, p2)
 };
 const getWinner = (p1, p2) => {
