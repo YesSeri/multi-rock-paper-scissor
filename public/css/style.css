@@ -93,8 +93,7 @@ form input {
 	display: none;
 }
 
-.choices {
-}
+.choices {}
 
 svg {
 	max-width: 200px;
@@ -118,7 +117,7 @@ svg {
 }
 
 .scoreboardDiv {
-	display:flex;
+	display: flex;
 	justify-content: space-evenly;
 	font-size: 3em;
 }
@@ -131,4 +130,8 @@ svg {
 	height: 40px;
 	width: 180px;
 	border-radius: 15px;
+}
+
+#container.hide {
+	display: none;
 }

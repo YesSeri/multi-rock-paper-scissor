@@ -16,9 +16,6 @@ const acceptInviteButton = document.getElementById('acceptInviteButton');
 const replayButtons = document.getElementsByClassName('replayButtons');
 const choiceButtons = document.getElementsByClassName('choiceButtons');
 
-for (el of choiceButtons) {
-  console.log(el)
-}
 function inLobby() {
   createGameButton.addEventListener('click', function () {
     firstPlayer = true;
@@ -84,7 +81,6 @@ socket.on('restartGame', () => {
 //Player 1 Joined
 socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
-  console.log('p1Joined')
   console.log(data)
   setGlobalName(data.p1name,data.p2name)
   initiateScore(data);
@@ -97,7 +93,6 @@ socket.on('player1Joined', (data) => { //Here the name of the oppnent is also re
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
   setMessage('New player joined, game has started')
-  console.log('p1Joined')
   console.log(data)
   setGlobalName(data.p1name,data.p2name)
   initiateScore(data);
@@ -120,7 +115,8 @@ function initiateScore(){
 
 function disableLobby() {
   const container = document.getElementById('container');
-  container.style.display = 'none';
+  container.classList.add("hide");
+
 }
 
 function enableGameRoom() {
@@ -135,7 +131,6 @@ function enableGameContainer() {
 }
 function disableChoiceButtons() {
   for (button of choiceButtons) {
-    console.log(button)
     button.classList.add("noHoverDisabled");
   }
 }
@@ -184,8 +179,10 @@ socket.on('opponentDisconnected', () => {
 })
 
 const resetGame = () => {
-  createGameButton.style.visibility = 'visible';
-  joinGameButton.style.visibility = 'visible';
+  const container = document.getElementById('container');
+  container.classList.remove("hide");
+  const gameContainer = document.getElementById('gameContainer');
+  gameContainer.style.display = 'none';
 }
 
 
