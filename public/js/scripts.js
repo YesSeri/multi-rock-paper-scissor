@@ -4,38 +4,62 @@ const createGameButton = document.getElementById('createGameButton');
 const joinGameButton = document.getElementById('joinGameButton');
 const playAgainButton = document.getElementById('playAgainButton');
 const acceptInviteButton = document.getElementById('acceptInviteButton');
-const message = document.getElementById('message')
 
 const seeGameBox = () => {
   const container = document.getElementById('container');
+  setMessage('Choose your input')
   container.style.display = 'none';
   const gameContainer = document.getElementById('gameContainer');
   gameContainer.style.display = 'block';
+  document.getElementById('roomNameInfo').innerHTML = "You are in: room3";
 }
 
 let firstPlayer = false;
+let myName = "";
 let roomID;
 socket.on('newGame', ({ roomID }) => {
   document.getElementById('roomNameInfo').innerHTML = roomID;
+  setMessage(`Hello, ${myName}! Ask your friend to enter the game ID: ${roomID}`)
+  setImportantMessage();
 });
 
 createGameButton.addEventListener('click', function () {
   const nameInput = document.getElementById("nameCreate").value;
+  myName = nameInput;
   firstPlayer = true;
-  message.display = "inline-block"
-  message.innerText = 'Waiting for player two'
+  hideCreateGame();
   socket.emit('createGame', { name: 'Player One' });
 });
 
+function setMessage(text) {
+  const message = document.getElementById('message')
+  message.display = "inline-block"
+  message.innerText = text
+}
+function setImportantMessage() {
+  const element = document.getElementById("message");
+  element.classList.add("importantMessage");
+}
+function removeImportantMessage() {
+  const element = document.getElementById("message");
+  element.classList.remove("importantMessage");
+}
+
+function hideCreateGame() {
+  const container = document.getElementById('container');
+  container.style.display = 'none';
+}
+
 joinGameButton.addEventListener('click', function () {
-  const playerName = 'Player Two';
+  const nameInput = document.getElementById("nameJoin").value;
+  const name = nameInput;
   roomID = document.getElementById('joinRoomInput').value;
   document.getElementById('roomNameInfo').innerHTML = "Room: " + roomID;
-  socket.emit('joinGame', { name: playerName, roomID });
+  socket.emit('joinGame', { name, roomID });
 });
 
 playAgainButton.addEventListener('click', function () {
-  message.innerText = 'Waiting for other player to accept. '
+  setMessage('Waiting for other player to accept.')
   playAgainButton.style.display = 'none';
   socket.emit('playAgain', { roomID });
 })
@@ -51,42 +75,44 @@ socket.on('playAgainInvite', () => {
 })
 socket.on('restartGame', () => {
   enableChoiceButtons()
-  message.innerText = 'Playing Again'
+  setMessage('Playing Again')
 })
 
 //Player 1 Joined
 socket.on('player1Joined', (data) => {
-  enableChoiceButtons()
-  message.innerText = 'Game has started'
-  transition(data);
+  startGame()
+  removeImportantMessage()
+  setMessage('Game has started')
 });
 
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
-  enableChoiceButtons()
-  message.innerText = 'New player joined, game has started'
-  transition(data);
+  startGame()
+  setMessage('New player joined, game has started')
 });
 
+function startGame() {
+  enableChoiceButtons()
+  const container = document.getElementById('container');
+  container.style.display = 'none';
+  const gameContainer = document.getElementById('gameContainer');
+  gameContainer.style.display = 'block';
+  document.getElementById('roomNameInfo').innerHTML = "You are in: room3";
+}
+
 socket.on('result', (data) => {
-  console.log(data.winnerMessage)
-  message.innerText = data.winnerMessage
+  setMessage(data.winnerMessage)
   playAgainButton.style.display = 'inline-block';
 });
 
 socket.on('opponentDisconnected', () => {
-  message.innerText = 'Opponent disconnected. Game over'
+  setMessage('Opponent disconnected. Game over')
   resetGame();
 })
 
 const resetGame = () => {
   createGameButton.style.visibility = 'visible';
   joinGameButton.style.visibility = 'visible';
-}
-
-const transition = () => {
-  createGameButton.style.visibility = 'hidden';
-  joinGameButton.style.visibility = 'hidden';
 }
 
 const choiceArray = ['Rock', 'Paper', 'Scissor']
@@ -102,13 +128,14 @@ choiceArray.forEach((choice) => {
 
 const buttonClicked = (choice) => {
   console.log(choice)
-  // makeChoice(choice)
-  // disableChoiceButtons();
+  setMessage("Waiting for opponent to move.")
+  makeChoice(choice)
+  disableChoiceButtons();
 }
 
 const disableChoiceButtons = () => {
   for (button of choiceButtons) {
-    button.style.visibility == 'hidden'
+    button.classList.add("noHoverDisabled");
   }
 }
 

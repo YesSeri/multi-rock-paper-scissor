@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
 	console.log('User has connected:' + socket.id);
 	socket.on('createGame', (data) => {
 		y++;
-		const roomID = 'room'+y//uniqueString().slice(0, 4);
+		const roomID = uniqueString().slice(0, 4);
     leaveAllRooms(socket)
 		addRoom(roomID)
 		socket.join(roomID);
@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
 	});
 	socket.on('choicePlayerTwo', (data) => {
 		const {roomID, choice} = data
+		console.log(data)
 		rooms[roomID].p2.choice = choice
 		console.log(rooms[roomID].p1.choice, rooms[roomID].p2.choice);
 		if (rooms[roomID].p1.choice  !== '') {

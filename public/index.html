@@ -20,7 +20,7 @@
 			<span style="color: rgb(255, 107, 107);">Scissor</span>
 		</h1>
 		<div id="container">
-			<div class="startGameDivs">
+			<div id="createGameDiv" class="startGameDivs">
 				<form onsubmit="return false">
 					<h3>Create a new Game</h3>
 					<input placeholder="Enter your name" id="nameCreate">
@@ -42,7 +42,7 @@
 				</form>
 			</div>
 		</div>
-		<p id="message">Welcome to Rock, Paper, Scissor</p>
+		<h4 id="message">Welcome to Rock, Paper, Scissor</h4>
 		<div id="gameContainer">
 			<p id="roomNameInfo">Room:
 			</p>
@@ -71,11 +71,9 @@
 					</svg><!-- <i id="scissors" class="choice fas fa-hand-scissors fa-10x"></i> -->
 				</div>
 			</div>
-			<div>
-				<button id="playAgainButton">Play Again</button>
-			</div>
-			<div>
-				<button id="acceptInviteButton">Accept Invite</button>
+			<div id="replayButtonsDiv">
+				<button id="playAgainButton" class="replayButtons">Play Again</button>
+				<button id="acceptInviteButton" class="replayButtons">Accept Invite</button>
 			</div>
 		</div>
 	</div>

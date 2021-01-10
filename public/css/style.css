@@ -18,14 +18,25 @@ h3 {
 	font-weight: 400;
 }
 
+h4 {
+	font-size: 1em;
+	font-weight: 400;
+}
+
 div {
 	margin: auto;
 	text-align: center;
 }
 
+.importantMessage {
+	font-size: 2em;
+	font-weight: 500;
+}
+
 #container {
 	margin: 0px 20px;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-evenly;
 }
 
@@ -34,16 +45,26 @@ div {
 	border-radius: 15px;
 	height: 150px;
 	width: 45%;
+	padding: 0px 10px;
+	margin-top: 40px;
 }
 
-.joinCreateButtonDiv{
+@media screen and (max-width: 600px) {
+	.startGameDivs {
+		width: auto;
+		max-width: 300px;
+	}
+}
+
+.joinCreateButtonDiv {
 	width: 100%;
 	height: 100%;
 	display: flex;
 	align-items: center;
 }
+
 .startGameDivs button {
-	margin:auto;
+	margin: auto;
 	border: none;
 	background-color: #feca57;
 	color: black;
@@ -68,39 +89,62 @@ form input {
 }
 
 #joinInputDiv {
+	width: 80%;
 	display: flex;
+	justify-content: space-between;
 	flex-wrap: wrap;
 }
 
 #gameContainer {
-	display:none;
+	display: none;
 }
-.choices{
+
+.choices {
 	display: flex;
 	justify-content: center;
 	max-height: 200px;
 }
+
 svg {
 	max-width: 200px;
 	/* visibility:hidden; */
-} 
+}
+
 #Rock:hover {
-  color: var(--blue);
+	color: var(--blue);
 }
+
 #Paper:hover {
-  color: var(--yellow);
+	color: var(--yellow);
 }
+
 #Scissor:hover {
-  color: var(--red);
+	color: var(--red);
 }
+
+.noHoverDisabled {
+	color: grey;
+	pointer-events: none;
+}
+
 #roomNameInfo {
 	/* display: none; */
 }
 
 #playAgainButton {
-	/* display: none; */
+	display: none;
 }
 
 #acceptInviteButton {
-	/* display: none; */
+	display: none;
+}
+
+.replayButtons {
+	margin: 10px auto;
+	border: none;
+	background-color: #feca57;
+	color: black;
+	height: 40px;
+	width: 180px;
+	border-radius: 15px;
 }
