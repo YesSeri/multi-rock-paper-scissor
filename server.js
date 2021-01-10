@@ -35,7 +35,6 @@ io.on('connection', (socket) => {
 	});
 	socket.on('joinGame', (data) => {
 		const { roomID, name } = data
-		debugger;
 		rooms[roomID].p2.name = name
     leaveAllRooms(socket)
 		socket.join(roomID);
@@ -45,11 +44,12 @@ io.on('connection', (socket) => {
 			p2name: name,
 			p1name: rooms[roomID].p1.name,
 		});
+		debugger;
 		socket.emit('player1Joined', {
 			// Socket emit sends to current socket only.
 			roomID,
 			p2name: rooms[roomID].p2.name,
-			p1name: name,
+			p1name: rooms[roomID].p1.name,
 		});
 	});
 	socket.on('choicePlayerOne', (data) => {

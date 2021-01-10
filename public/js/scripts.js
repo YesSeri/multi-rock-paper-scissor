@@ -2,6 +2,8 @@ const socket = io();
 
 let firstPlayer = false;
 let roomID;
+let namePlayer1;
+let namePlayer2;
 
 const createGameButton = document.getElementById('createGameButton');
 const joinGameButton = document.getElementById('joinGameButton');
@@ -73,11 +75,7 @@ acceptInviteButton.addEventListener('click', function () {
   acceptInviteButton.style.display = 'none';
   socket.emit('acceptInvite', { roomID });
 })
-socket.on('playAgainInvite', () => {
-  playAgainButton.style.display = 'none';
-  acceptInviteButton.style.display = 'inline-block';
 
-})
 socket.on('restartGame', () => {
   enableChoiceButtons()
   setMessage('Playing Again')
@@ -86,6 +84,10 @@ socket.on('restartGame', () => {
 //Player 1 Joined
 socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
+  console.log('p1Joined')
+  console.log(data)
+  setGlobalName(data.p1name,data.p2name)
+  initiateScore(data);
   disableLobby()
   removeImportantMessage()
   enableGameRoom();
@@ -95,11 +97,26 @@ socket.on('player1Joined', (data) => { //Here the name of the oppnent is also re
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
   setMessage('New player joined, game has started')
+  console.log('p1Joined')
+  console.log(data)
+  setGlobalName(data.p1name,data.p2name)
+  initiateScore(data);
   disableLobby()
   removeImportantMessage()
   enableGameRoom();
   // startGame()
 });
+function setGlobalName(p1name, p2name){
+  namePlayer1 = p1name
+  namePlayer2 = p2name
+}
+
+function initiateScore(){
+  const score1 = document.getElementById('score1')
+  const score2 = document.getElementById('score2')
+  score1.innerText = `${namePlayer1}: 0`
+  score2.innerText = `${namePlayer2}: 0`
+}
 
 function disableLobby() {
   const container = document.getElementById('container');
@@ -131,10 +148,8 @@ function enableChoiceButtons() {
   }
 }
 
-function enableReplayButtons() {
-  for (button of replayButtons) {
-    button.style.display = 'none'
-  }
+function enablePlayAgainButton() {
+  playAgainButton.style.display = 'inline-block'
 }
 
 function disableReplayButtons() {
@@ -144,18 +159,34 @@ function disableReplayButtons() {
 }
 socket.on('result', (data) => {
   setMessage(data.winnerMessage)
-  playAgainButton.style.display = 'inline-block';
+  updateScore(data.scoreP1, data.scoreP2);
+  enablePlayAgainButton()
 });
 
-// socket.on('opponentDisconnected', () => {
-//   setMessage('Opponent disconnected. Game over')
-//   resetGame();
-// })
 
-// const resetGame = () => {
-//   createGameButton.style.visibility = 'visible';
-//   joinGameButton.style.visibility = 'visible';
-// }
+function updateScore(scoreP1, scoreP2){
+  const scoreOneSpan = document.getElementById('score1')
+  const scoreTwoSpan = document.getElementById('score2')
+  scoreOneSpan.innerText = `${namePlayer1}: ${scoreP1}`
+  scoreTwoSpan.innerText = `${namePlayer2}: ${scoreP2}`
+}
+
+function enableAcceptInviteButton() {
+  playAgainButton.style.display = 'none';
+  acceptInviteButton.style.display = 'inline-block';
+}
+socket.on('playAgainInvite', () => {
+  enableAcceptInviteButton()
+})
+socket.on('opponentDisconnected', () => {
+  setMessage('Opponent disconnected. Game over')
+  resetGame();
+})
+
+const resetGame = () => {
+  createGameButton.style.visibility = 'visible';
+  joinGameButton.style.visibility = 'visible';
+}
 
 
 const buttonClicked = (choice) => {
