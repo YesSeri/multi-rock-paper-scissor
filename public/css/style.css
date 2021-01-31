@@ -49,14 +49,22 @@ div {
 	min-width: 200px;
 	flex: 1;
 }
-#choices{
-	display:flex;
-	flex-wrap: wrap;
+
+#choices {
+	max-width: 800px;
+	display: flex;
 	justify-content: center;
 }
-.choiceDiv{
-	max-width: 200;
-	min-width: 120;
+
+@media (max-width: 600px) {
+	#choices {
+		flex-direction: column;
+	}
+}
+
+.choiceDiv {
+	max-width: 200px;
+	min-width: 120px;
 }
 
 /* svg {
@@ -105,7 +113,6 @@ form input {
 #gameContainer {
 	display: none;
 }
-
 
 #Rock:hover {
 	color: var(--blue);
