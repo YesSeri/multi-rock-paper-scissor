@@ -18,16 +18,24 @@ const choiceButtons = document.getElementsByClassName('choiceButtons');
 
 function inLobby() {
   createGameButton.addEventListener('click', function () {
-    firstPlayer = true;
-    const name = getNameFromInput('nameCreate')
-    socket.emit('createGame', { name });
-    waitRoom();
+    if (namePlayer1) {
+      firstPlayer = true;
+      const name = getNameFromInput('nameCreate')
+      socket.emit('createGame', { name });
+      waitRoom();
+    } else{
+      console.log("Name is empty. Please fill out to continue.")
+    }
   });
   joinGameButton.addEventListener('click', function () {
-    const name = getNameFromInput('nameJoin')
-    roomID = document.getElementById('joinRoomInput').value;
-    setRoomInfo(roomID)
-    socket.emit('joinGame', { name, roomID });
+    if (namePlayer2 && roomID) {
+      const name = getNameFromInput('nameJoin')
+      roomID = document.getElementById('joinRoomInput').value;
+      setRoomInfo(roomID)
+      socket.emit('joinGame', { name, roomID });
+    } else{
+      console.log("Name or roomID is empty. Please fill out to continue.")
+    }
   });
   function getNameFromInput(inputID) {
     return document.getElementById(inputID).value;
@@ -82,7 +90,7 @@ socket.on('restartGame', () => {
 socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
   console.log(data)
-  setGlobalName(data.p1name,data.p2name)
+  setGlobalName(data.p1name, data.p2name)
   initiateScore(data);
   disableLobby()
   removeImportantMessage()
@@ -94,19 +102,19 @@ socket.on('player1Joined', (data) => { //Here the name of the oppnent is also re
 socket.on('player2Joined', (data) => {
   setMessage('New player joined, game has started')
   console.log(data)
-  setGlobalName(data.p1name,data.p2name)
+  setGlobalName(data.p1name, data.p2name)
   initiateScore(data);
   disableLobby()
   removeImportantMessage()
   enableGameRoom();
   // startGame()
 });
-function setGlobalName(p1name, p2name){
+function setGlobalName(p1name, p2name) {
   namePlayer1 = p1name
   namePlayer2 = p2name
 }
 
-function initiateScore(){
+function initiateScore() {
   const score1 = document.getElementById('score1')
   const score2 = document.getElementById('score2')
   score1.innerText = `${namePlayer1}: 0`
@@ -159,7 +167,7 @@ socket.on('result', (data) => {
 });
 
 
-function updateScore(scoreP1, scoreP2){
+function updateScore(scoreP1, scoreP2) {
   const scoreOneSpan = document.getElementById('score1')
   const scoreTwoSpan = document.getElementById('score2')
   scoreOneSpan.innerText = `${namePlayer1}: ${scoreP1}`
