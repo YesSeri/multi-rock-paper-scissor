@@ -56,12 +56,6 @@ div {
 	justify-content: center;
 }
 
-@media (max-width: 600px) {
-	#choices {
-		flex-direction: column;
-	}
-}
-
 .choiceDiv {
 	max-width: 200px;
 	min-width: 120px;
@@ -133,6 +127,7 @@ form input {
 
 .scoreboardDiv {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-evenly;
 	font-size: 3em;
 }
@@ -149,4 +144,17 @@ form input {
 
 #container.hide {
 	display: none;
+}
+
+@media (max-width: 600px) {
+	#choices {
+		flex-direction: column;
+	}
+	.scoreboardDiv {
+		font-size: 1.8em;
+	}
+	.choiceDiv {
+		max-width: 150px;
+		min-width: 100px;
+	}
 }
