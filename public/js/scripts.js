@@ -18,22 +18,22 @@ const choiceButtons = document.getElementsByClassName('choiceButtons');
 
 function inLobby() {
   createGameButton.addEventListener('click', function () {
-    if (namePlayer1) {
+    const name = getNameFromInput('nameCreate')
+    if (name) {
       firstPlayer = true;
-      const name = getNameFromInput('nameCreate')
       socket.emit('createGame', { name });
       waitRoom();
-    } else{
+    } else {
       console.log("Name is empty. Please fill out to continue.")
     }
   });
   joinGameButton.addEventListener('click', function () {
-    if (namePlayer2 && roomID) {
-      const name = getNameFromInput('nameJoin')
-      roomID = document.getElementById('joinRoomInput').value;
+    const name = getNameFromInput('nameJoin')
+    roomID = document.getElementById('joinRoomInput').value;
+    if (name && roomID) {
       setRoomInfo(roomID)
       socket.emit('joinGame', { name, roomID });
-    } else{
+    } else {
       console.log("Name or roomID is empty. Please fill out to continue.")
     }
   });
@@ -89,7 +89,6 @@ socket.on('restartGame', () => {
 //Player 1 Joined
 socket.on('player1Joined', (data) => { //Here the name of the oppnent is also recieved
   setMessage('Game has started')
-  console.log(data)
   setGlobalName(data.p1name, data.p2name)
   initiateScore(data);
   disableLobby()
@@ -101,7 +100,6 @@ socket.on('player1Joined', (data) => { //Here the name of the oppnent is also re
 //Player 2 Joined
 socket.on('player2Joined', (data) => {
   setMessage('New player joined, game has started')
-  console.log(data)
   setGlobalName(data.p1name, data.p2name)
   initiateScore(data);
   disableLobby()
@@ -201,15 +199,12 @@ const buttonClicked = (choice) => {
 }
 function choiceButtonEventListeners() {
   rockButton.addEventListener('click', function () {
-    console.log('Click')
     buttonClicked('Rock')
   });
   paperButton.addEventListener('click', function () {
-    console.log('Click')
     buttonClicked('Paper')
   });
   scissorButton.addEventListener('click', function () {
-    console.log('Click')
     buttonClicked('Scissor')
   });
 
