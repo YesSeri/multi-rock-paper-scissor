@@ -56,8 +56,7 @@
 
 [Try it out!](https://rock-paper-scissor-multiplayer.herokuapp.com/)
 
-Here's a blank template to get started:
-I wanted to learn more about websockets. This project was a way for me to do that, and learn more in preparation for a bigger project I want to do, where it is the game Chess instead, but with a personal twist.
+I wanted to learn more about websockets. This project was a way for me to do that, and learn more!
 
 ### Built With
 
@@ -101,9 +100,6 @@ This is an example of how to list things you need to use the software and how to
    yarn run dev
    ```
 2. Go to <localhost:5000>
-
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
